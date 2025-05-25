@@ -1,4 +1,13 @@
 .title {
-  font-weight: 800;
+  font-weight: 500;
   margin-left: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+}
+
+.icon {
+  padding-left: 10px;
+  color: rgb(222, 22, 240);
 }

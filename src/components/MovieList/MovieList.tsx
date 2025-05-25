@@ -1,6 +1,12 @@
 import css from "./MovieList.module.css";
 import { Link, useLocation } from "react-router-dom";
-export default function MovieList({ movies }) {
+import { Movie } from "../../types.ts/movie";
+
+type Movies = {
+  movies: Movie[];
+};
+
+export default function MovieList({ movies }: Movies) {
   const location = useLocation();
   return (
     <>

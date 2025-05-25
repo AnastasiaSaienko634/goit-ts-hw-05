@@ -3,19 +3,28 @@ import css from "./MovieCast.module.css";
 import { Outlet, useParams, NavLink } from "react-router-dom";
 import { fetchCast } from "../../api";
 
+type Cast = {
+  name: string;
+  id: number;
+  profile_path: string;
+  character: string;
+};
+
 export default function MovieCast() {
-  const { movieId } = useParams();
-  const [cast, setCast] = useState([]);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { movieId } = useParams<{ movieId: string }>();
+  const [cast, setCast] = useState<Cast[]>([]);
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
-    async function loadCast() {
+    async function loadCast(): Promise<void> {
       try {
         setCast([]);
         setError(false);
         setLoading(true);
-        const data = await fetchCast(movieId);
-        setCast(data);
+        if (movieId) {
+          const data: Cast[] = await fetchCast(movieId);
+          setCast(data);
+        }
       } catch (error) {
         console.log(error);
         setError(true);

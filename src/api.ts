@@ -29,7 +29,7 @@ export async function fetchTrendingMovies(page = 1) {
   }
 }
 
-export async function fetchMovieDetails(movieId) {
+export async function fetchMovieDetails(movieId: string) {
   try {
     const response = await axios.get(`${BASE_URL}/movie/${movieId}`, {
       params: {
@@ -45,7 +45,7 @@ export async function fetchMovieDetails(movieId) {
   }
 }
 
-export async function fetchCast(movieId) {
+export async function fetchCast(movieId: string) {
   try {
     const response = await axios.get(`${BASE_URL}/movie/${movieId}/credits`, {
       params: {
@@ -61,7 +61,7 @@ export async function fetchCast(movieId) {
   }
 }
 
-export async function fetchReviews(movieId) {
+export async function fetchReviews(movieId: string) {
   try {
     const response = await axios.get(`${BASE_URL}/movie/${movieId}/reviews`, {
       params: {
@@ -77,7 +77,7 @@ export async function fetchReviews(movieId) {
   }
 }
 
-export async function fetchMovies(searchQuery) {
+export async function fetchMovies(searchQuery: string) {
   try {
     const response = await axios.get(`${BASE_URL}search/movie`, {
       ...getHeaders(),

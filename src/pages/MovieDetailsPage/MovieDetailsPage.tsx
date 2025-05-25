@@ -6,22 +6,27 @@ import { fetchMovieDetails } from "../../api";
 import { IoIosArrowBack } from "react-icons/io";
 import { LuMessageSquareMore } from "react-icons/lu";
 import { TiArrowSortedUp } from "react-icons/ti";
+import { MovieInfo } from "../../types.ts/movie";
 
 export default function MovieDetailsPage() {
-  const { movieId } = useParams();
-  const [movieInfo, setMovieInfo] = useState({});
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { movieId } = useParams<{ movieId: string }>();
+  const [movieInfo, setMovieInfo] = useState<MovieInfo | null>(null);
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   const location = useLocation();
 
   const backLinkHref = useRef(location.state);
 
   useEffect(() => {
-    async function fecthMoreInfo() {
+    async function fecthMoreInfo(): Promise<void> {
       try {
-        setMovieInfo([]);
+        setMovieInfo(null);
         setError(false);
         setLoading(true);
+        if (!movieId) {
+          setError(true);
+          return;
+        }
         const data = await fetchMovieDetails(movieId);
         setMovieInfo(data);
       } catch (error) {
@@ -43,32 +48,35 @@ export default function MovieDetailsPage() {
       {error && (
         <div>Whoops, something went wrong. Please try again later!</div>
       )}
-      {movieInfo.length === 0 && (
+      {movieInfo === null && (
         <p>Sorry now we don't have information about this movie.</p>
       )}
-      <div className={css.container}>
-        <div className={css.imgContainer}>
-          <img
-            src={`https://image.tmdb.org/t/p/w500${movieInfo.poster_path}`}
-            alt={movieInfo.title}
-          />
-        </div>
-        <div className={css.textContainer}>
-          <h1 className={css.title}>{movieInfo.title}</h1>
-          <h2 className={css.titleName}>User score:</h2>
-          <p>{movieInfo.vote_average}%</p>
-          <h2 className={css.titleName}>Overview</h2>
-          <p className={css.overview}>{movieInfo.overview}</p>
-          <h2 className={css.titleName}>Genres</h2>
-          <div>
-            {movieInfo.genres && movieInfo.genres.length > 0 ? (
-              movieInfo.genres.map((g) => g.name).join(", ")
-            ) : (
-              <span>No genres available</span>
-            )}
+
+      {movieInfo && (
+        <div className={css.container}>
+          <div className={css.imgContainer}>
+            <img
+              src={`https://image.tmdb.org/t/p/w500${movieInfo.poster_path}`}
+              alt={movieInfo.title}
+            />
+          </div>
+          <div className={css.textContainer}>
+            <h1 className={css.title}>{movieInfo.title}</h1>
+            <h2 className={css.titleName}>User score:</h2>
+            <p>{movieInfo.vote_average}%</p>
+            <h2 className={css.titleName}>Overview</h2>
+            <p className={css.overview}>{movieInfo.overview}</p>
+            <h2 className={css.titleName}>Genres</h2>
+            <div>
+              {movieInfo.genres && movieInfo.genres.length > 0 ? (
+                movieInfo.genres.map((g) => g.name).join(", ")
+              ) : (
+                <span>No genres available</span>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <h2 className={css.additionalText}>
         <LuMessageSquareMore className={css.iconss} /> Additional Information:
         <nav className={css.links}>

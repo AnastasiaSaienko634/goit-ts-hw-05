@@ -1,26 +1,27 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import css from "./MoviesPage.module.css";
 import { fetchMovies } from "../../api";
 import MovieList from "../../components/MovieList/MovieList";
 import { IoIosSearch } from "react-icons/io";
+import { Movie } from "../../types.ts/movie";
 
 export default function MoviePage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [movies, setMovies] = useState([]);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const query = searchParams.get("query");
     if (!query) return;
 
-    const fetchMovieData = async () => {
+    const fetchMovieData = async (): Promise<void> => {
       try {
         setLoading(true);
         setError(false);
-        const data = await fetchMovies(query);
+        const data: Movie[] = await fetchMovies(query);
         localStorage.setItem("movies", JSON.stringify(data));
         setMovies(data);
       } catch (error) {
@@ -33,20 +34,22 @@ export default function MoviePage() {
     fetchMovieData();
   }, [searchParams]);
 
-  const setParam = (query) => {
+  const setParam = (query: string) => {
     setSearchParams({ query });
   };
 
-  const onSubmitForm = async (event) => {
+  const onSubmitForm = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const form = event.target;
-    const query = form.elements.query.value.trim();
+    const form = event.target as HTMLFormElement;
+    const query = (
+      form.elements.namedItem("query") as HTMLInputElement
+    ).value.trim();
     if (!query) return;
 
     setSearchQuery(query);
     setParam(query);
   };
-  const onChangeForm = (event) => {
+  const onChangeForm = (event: ChangeEvent<HTMLInputElement>): void => {
     setSearchQuery(event.target.value);
   };
 

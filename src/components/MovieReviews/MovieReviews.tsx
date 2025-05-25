@@ -2,18 +2,23 @@ import { useEffect, useState } from "react";
 import css from "./MovieReviews.module.css";
 import { useParams } from "react-router-dom";
 import { fetchReviews } from "../../api";
+import { Review } from "../../types.ts/review";
 
 export default function MovieReviews() {
-  const { movieId } = useParams();
-  const [reviews, setReviews] = useState([]);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const { movieId } = useParams<{ movieId: string }>();
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [error, setError] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
-    async function loadReviews() {
+    async function loadReviews(): Promise<void> {
       try {
         setError(false);
         setLoading(true);
-        const data = await fetchReviews(movieId);
+        if (!movieId) {
+          setError(true);
+          return;
+        }
+        const data: Review[] = await fetchReviews(movieId);
         setReviews(data);
       } catch (error) {
         console.log(error);
